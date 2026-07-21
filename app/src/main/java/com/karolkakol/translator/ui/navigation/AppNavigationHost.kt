@@ -39,7 +39,6 @@ object TranslationKey : NavKey
 @Serializable
 object BenchmarkKey : NavKey
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppNavigationHost(modifier: Modifier = Modifier) {
@@ -58,7 +57,6 @@ fun AppNavigationHost(modifier: Modifier = Modifier) {
                     modifier = Modifier.padding(start = 12.dp)
                 )
                 HorizontalDivider(Modifier.padding(vertical = 12.dp))
-
                 NavigationDrawerItem(
                     label = { Text("Translation") },
                     selected = currentKey == TranslationKey,
@@ -71,7 +69,6 @@ fun AppNavigationHost(modifier: Modifier = Modifier) {
                         }
                     }
                 )
-
                 NavigationDrawerItem(
                     label = { Text("Benchmark") },
                     selected = currentKey is BenchmarkKey,
@@ -123,7 +120,7 @@ fun AppNavigationHost(modifier: Modifier = Modifier) {
                         Box(
                             Modifier
                                 .fillMaxSize()
-                                .background(Color.Red)
+                                .background(Color.Green)
                         ) {
                             Text("Benchmark")
                         }
