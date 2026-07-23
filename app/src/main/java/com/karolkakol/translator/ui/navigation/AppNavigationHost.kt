@@ -1,8 +1,5 @@
 package com.karolkakol.translator.ui.navigation
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.BarChart
@@ -24,7 +21,6 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
@@ -110,22 +106,10 @@ fun AppNavigationHost(modifier: Modifier = Modifier) {
                 onBack = { backStack.removeLastOrNull() },
                 entryProvider = entryProvider {
                     entry<TranslationKey> {
-                        Box(
-                            Modifier
-                                .fillMaxSize()
-                                .background(Color.Red)
-                        ) {
-                            TranslationScreen()
-                        }
+                        TranslationScreen()
                     }
                     entry<BenchmarkKey> {
-                        Box(
-                            Modifier
-                                .fillMaxSize()
-                                .background(Color.Green)
-                        ) {
-                            BenchmarkScreen()
-                        }
+                        BenchmarkScreen()
                     }
                 },
                 modifier = Modifier.padding(innerPadding)

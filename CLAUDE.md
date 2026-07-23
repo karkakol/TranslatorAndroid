@@ -27,7 +27,7 @@ Uses the Gradle wrapper (`./gradlew`). Gradle 9.5, AGP 9.3, Kotlin 2.2.10, JDK 1
 
 ## Conventions
 
-- **Explicit backing fields** are enabled via the `-Xexplicit-backing-fields` compiler flag. This is why ViewModels declare a public read-only type with a private mutable backing field like:
+- **Explicit backing fields** are enabled via the `-XXLanguage:+ExplicitBackingFields` compiler flag (Kotlin 2.2.10 predates the dedicated `-Xexplicit-backing-fields` flag, so the generic language-feature toggle is used instead). This is why ViewModels declare a public read-only type with a private mutable backing field like:
   ```kotlin
   val nameState: StateFlow<String>
       field = MutableStateFlow("...")
