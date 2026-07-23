@@ -4,6 +4,12 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.serialization)
 }
 
+kotlin {
+    compilerOptions {
+        freeCompilerArgs.add("-XXLanguage:+ExplicitBackingFields")
+    }
+}
+
 android {
     namespace = "com.karolkakol.translator"
     compileSdk {

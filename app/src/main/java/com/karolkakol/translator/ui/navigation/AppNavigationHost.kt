@@ -30,6 +30,7 @@ import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
+import com.karolkakol.translator.ui.screens.translation.TranslationScreen
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 
@@ -113,7 +114,7 @@ fun AppNavigationHost(modifier: Modifier = Modifier) {
                                 .fillMaxSize()
                                 .background(Color.Red)
                         ) {
-                            Text("Translation")
+                            TranslationScreen()
                         }
                     }
                     entry<BenchmarkKey> {
