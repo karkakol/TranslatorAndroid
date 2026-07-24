@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -13,6 +14,7 @@ import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -26,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.karolkakol.translator.ui.theme.TranslatorTheme
 
@@ -34,17 +37,32 @@ fun TranslationScreen(
     modifier: Modifier = Modifier,
     viewModel: TranslationViewModel = viewModel(),
 ) {
-    TranslationContent(
-        modifier = modifier,
-        fromTextFieldState = viewModel.fromTextFieldState,
-        toTextFieldState = viewModel.toTextFieldState,
-    )
+    if (viewModel.areTranslatorsReady.collectAsStateWithLifecycle().value) {
+        TranslationContent(
+            modifier = modifier,
+            fromTextFieldState = viewModel.fromTextFieldState,
+            toTextFieldState = viewModel.toTextFieldState,
+            fromTranslationType = viewModel.fromTranslationType.collectAsStateWithLifecycle().value,
+            toTranslationType = viewModel.toTranslationType.collectAsStateWithLifecycle().value,
+            changeTranslatorType = viewModel::changeTranslatorType,
+        )
+    } else {
+        Box(Modifier.fillMaxSize(), Alignment.Center) {
+            CircularProgressIndicator(
+                Modifier.padding(20.dp).fillMaxWidth().aspectRatio(1f),
+                strokeWidth = 20.dp,
+            )
+        }
+    }
 }
 
 @Composable
 private fun TranslationContent(
     fromTextFieldState: TextFieldState,
     toTextFieldState: TextFieldState,
+    fromTranslationType: AppTranslatorType,
+    toTranslationType: AppTranslatorType,
+    changeTranslatorType: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -68,11 +86,11 @@ private fun TranslationContent(
         )
         Spacer(Modifier.height(24.dp))
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
-            TranslationLanguageCard("English", Modifier.weight(1f))
-            IconButton(onClick = {}) {
+            TranslationLanguageCard(fromTranslationType.name, Modifier.weight(1f))
+            IconButton(onClick = changeTranslatorType) {
                 Icon(Icons.Default.SwapHoriz, contentDescription = "Change languages")
             }
-            TranslationLanguageCard("Polish", Modifier.weight(1f))
+            TranslationLanguageCard(toTranslationType.name, Modifier.weight(1f))
         }
     }
 }
@@ -123,6 +141,9 @@ private fun TranslationScreenPreview() {
         TranslationContent(
             fromTextFieldState = TextFieldState("Hello world"),
             toTextFieldState = TextFieldState("dlrow olleH"),
+            fromTranslationType = AppTranslatorType.English,
+            toTranslationType = AppTranslatorType.Polish,
+            changeTranslatorType = {},
         )
     }
 }
