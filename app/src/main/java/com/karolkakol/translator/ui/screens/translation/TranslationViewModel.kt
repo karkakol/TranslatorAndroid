@@ -11,6 +11,7 @@ import com.google.mlkit.nl.translate.Translation
 import com.google.mlkit.nl.translate.Translator
 import com.google.mlkit.nl.translate.TranslatorOptions
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
@@ -19,6 +20,12 @@ import kotlin.time.Duration.Companion.milliseconds
 enum class AppTranslatorType {
     Polish,
     English,
+    ;
+
+    companion object {
+        val initialFrom = Polish
+        val initialTo = English
+    }
 }
 
 class TranslationViewModel : ViewModel() {
@@ -44,9 +51,12 @@ class TranslationViewModel : ViewModel() {
     var isEnglishTranslatorReady = false
     var isPolishTranslatorReady = false
 
-    var areTranslatorsReady = MutableStateFlow(false)
-    var fromTranslationType = MutableStateFlow(AppTranslatorType.English)
-    var toTranslationType = MutableStateFlow(AppTranslatorType.Polish)
+    val areTranslatorsReady: StateFlow<Boolean>
+        field = MutableStateFlow(false)
+    val fromTranslationType: StateFlow<AppTranslatorType>
+        field = MutableStateFlow(AppTranslatorType.initialFrom)
+    val toTranslationType: StateFlow<AppTranslatorType>
+        field = MutableStateFlow(AppTranslatorType.initialTo)
 
     init {
         viewModelScope.launch {
@@ -106,7 +116,7 @@ class TranslationViewModel : ViewModel() {
 
     fun translateTextField(text: String) {
         val translator =
-            if (fromTranslationType.value == AppTranslatorType.English) englishPolishTranslator else polishEnglishTranslator
+            if (toTranslationType.value == AppTranslatorType.English) polishEnglishTranslator else englishPolishTranslator
         translator.translate(text).addOnSuccessListener { translation ->
             toTextFieldState.setTextAndPlaceCursorAtEnd(translation)
         }

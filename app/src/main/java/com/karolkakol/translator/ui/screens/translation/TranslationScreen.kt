@@ -1,5 +1,9 @@
 package com.karolkakol.translator.ui.screens.translation
 
+import androidx.compose.animation.animateBounds
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -23,8 +27,13 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldLabelScope
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.movableContentWithReceiverOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.LookaheadScope
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -43,13 +52,15 @@ fun TranslationScreen(
             fromTextFieldState = viewModel.fromTextFieldState,
             toTextFieldState = viewModel.toTextFieldState,
             fromTranslationType = viewModel.fromTranslationType.collectAsStateWithLifecycle().value,
-            toTranslationType = viewModel.toTranslationType.collectAsStateWithLifecycle().value,
             changeTranslatorType = viewModel::changeTranslatorType,
         )
     } else {
         Box(Modifier.fillMaxSize(), Alignment.Center) {
             CircularProgressIndicator(
-                Modifier.padding(20.dp).fillMaxWidth().aspectRatio(1f),
+                Modifier
+                    .padding(20.dp)
+                    .fillMaxWidth()
+                    .aspectRatio(1f),
                 strokeWidth = 20.dp,
             )
         }
@@ -61,7 +72,6 @@ private fun TranslationContent(
     fromTextFieldState: TextFieldState,
     toTextFieldState: TextFieldState,
     fromTranslationType: AppTranslatorType,
-    toTranslationType: AppTranslatorType,
     changeTranslatorType: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -85,12 +95,64 @@ private fun TranslationContent(
             placeholder = { Text("Translation...", style = MaterialTheme.typography.titleLarge) },
         )
         Spacer(Modifier.height(24.dp))
-        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
-            TranslationLanguageCard(fromTranslationType.name, Modifier.weight(1f))
-            IconButton(onClick = changeTranslatorType) {
-                Icon(Icons.Default.SwapHoriz, contentDescription = "Change languages")
+        TranslationSelectLanguageRow(
+            fromTranslationType,
+            changeTranslatorType,
+        )
+    }
+}
+
+@Composable
+fun TranslationSelectLanguageRow(
+    fromTranslationType: AppTranslatorType,
+    changeTranslatorType: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val isSwapped = fromTranslationType == AppTranslatorType.initialTo
+
+    val fromCard =
+        remember {
+            movableContentWithReceiverOf<LookaheadScope, Modifier> { modifier ->
+                TranslationLanguageCard(
+                    AppTranslatorType.initialFrom.name,
+                    modifier.animateBounds(this),
+                )
             }
-            TranslationLanguageCard(toTranslationType.name, Modifier.weight(1f))
+        }
+
+    val toCard =
+        remember {
+            movableContentWithReceiverOf<LookaheadScope, Modifier> { modifier ->
+                TranslationLanguageCard(
+                    AppTranslatorType.initialTo.name,
+                    modifier.animateBounds(this),
+                )
+            }
+        }
+    LookaheadScope {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            if (isSwapped) toCard(Modifier.weight(1f)) else fromCard(Modifier.weight(1f))
+
+            IconButton(onClick = changeTranslatorType) {
+                val rotation by animateFloatAsState(
+                    targetValue = if (isSwapped) 180f else 0f,
+                    animationSpec = spring(stiffness = Spring.StiffnessLow),
+                    label = "IconRotation",
+                )
+                Icon(
+                    Icons.Default.SwapHoriz,
+                    contentDescription = "Change languages",
+                    modifier =
+                        Modifier.graphicsLayer(
+                            rotationZ = rotation,
+                        ),
+                )
+            }
+
+            if (isSwapped) fromCard(Modifier.weight(1f)) else toCard(Modifier.weight(1f))
         }
     }
 }
@@ -140,9 +202,8 @@ private fun TranslationScreenPreview() {
     TranslatorTheme {
         TranslationContent(
             fromTextFieldState = TextFieldState("Hello world"),
-            toTextFieldState = TextFieldState("dlrow olleH"),
+            toTextFieldState = TextFieldState("Witaj świecie"),
             fromTranslationType = AppTranslatorType.English,
-            toTranslationType = AppTranslatorType.Polish,
             changeTranslatorType = {},
         )
     }
