@@ -50,17 +50,16 @@ private fun TranslationContent(
     Column(
         modifier
             .fillMaxSize()
-            .padding(12.dp)
+            .padding(12.dp),
     ) {
         TranslationTextField(
             state = fromTextFieldState,
-            label = { Text("Translate text") },
             placeholder = { Text("Translate text", style = MaterialTheme.typography.titleLarge) },
         )
         HorizontalDivider(
             Modifier
                 .padding(horizontal = 36.dp)
-                .padding(vertical = 16.dp)
+                .padding(vertical = 16.dp),
         )
         TranslationTextField(
             state = toTextFieldState,
@@ -85,7 +84,7 @@ fun TranslationTextField(
     modifier: Modifier = Modifier,
     readOnly: Boolean = false,
     textStyle: TextStyle = MaterialTheme.typography.titleLarge,
-    label: @Composable (TextFieldLabelScope.() -> Unit)? = null
+    label: @Composable (TextFieldLabelScope.() -> Unit)? = null,
 ) {
     TextField(
         state = state,
@@ -99,15 +98,19 @@ fun TranslationTextField(
 }
 
 @Composable
-fun TranslationLanguageCard(text: String, modifier: Modifier = Modifier) {
+fun TranslationLanguageCard(
+    text: String,
+    modifier: Modifier = Modifier,
+) {
     Card(modifier.padding(12.dp)) {
         Box(
-            contentAlignment = Alignment.Center, modifier = Modifier.fillMaxWidth()
+            contentAlignment = Alignment.Center,
+            modifier = Modifier.fillMaxWidth(),
         ) {
             Text(
                 text,
                 modifier = Modifier.padding(12.dp),
-                style = MaterialTheme.typography.titleLarge
+                style = MaterialTheme.typography.titleLarge,
             )
         }
     }
@@ -119,7 +122,7 @@ private fun TranslationScreenPreview() {
     TranslatorTheme {
         TranslationContent(
             fromTextFieldState = TextFieldState("Hello world"),
-            toTextFieldState = TextFieldState("dlrow olleH")
+            toTextFieldState = TextFieldState("dlrow olleH"),
         )
     }
 }

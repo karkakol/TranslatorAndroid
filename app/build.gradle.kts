@@ -13,9 +13,10 @@ kotlin {
 android {
     namespace = "com.karolkakol.translator"
     compileSdk {
-        version = release(37) {
-            minorApiLevel = 0
-        }
+        version =
+            release(37) {
+                minorApiLevel = 0
+            }
     }
 
     defaultConfig {

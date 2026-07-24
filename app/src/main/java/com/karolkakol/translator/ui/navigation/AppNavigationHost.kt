@@ -52,7 +52,7 @@ fun AppNavigationHost(modifier: Modifier = Modifier) {
                 Text(
                     text = "Translation App",
                     style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.padding(start = 12.dp)
+                    modifier = Modifier.padding(start = 12.dp),
                 )
                 HorizontalDivider(Modifier.padding(vertical = 12.dp))
                 NavigationDrawerItem(
@@ -65,7 +65,7 @@ fun AppNavigationHost(modifier: Modifier = Modifier) {
                             backStack.clear()
                             backStack.add(TranslationKey)
                         }
-                    }
+                    },
                 )
                 NavigationDrawerItem(
                     label = { Text("Benchmark") },
@@ -77,7 +77,7 @@ fun AppNavigationHost(modifier: Modifier = Modifier) {
                             backStack.clear()
                             backStack.add(BenchmarkKey)
                         }
-                    }
+                    },
                 )
             }
         },
@@ -90,29 +90,30 @@ fun AppNavigationHost(modifier: Modifier = Modifier) {
                             when (currentKey) {
                                 is TranslationKey -> "Translation"
                                 else -> "Benchmark"
-                            }
+                            },
                         )
                     },
                     navigationIcon = {
                         IconButton(onClick = { scope.launch { drawerState.open() } }) {
                             Icon(Icons.Default.Menu, contentDescription = "Open Drawer")
                         }
-                    }
+                    },
                 )
-            }
+            },
         ) { innerPadding ->
             NavDisplay(
                 backStack = backStack,
                 onBack = { backStack.removeLastOrNull() },
-                entryProvider = entryProvider {
-                    entry<TranslationKey> {
-                        TranslationScreen()
-                    }
-                    entry<BenchmarkKey> {
-                        BenchmarkScreen()
-                    }
-                },
-                modifier = Modifier.padding(innerPadding)
+                entryProvider =
+                    entryProvider {
+                        entry<TranslationKey> {
+                            TranslationScreen()
+                        }
+                        entry<BenchmarkKey> {
+                            BenchmarkScreen()
+                        }
+                    },
+                modifier = Modifier.padding(innerPadding),
             )
         }
     }

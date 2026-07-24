@@ -6,14 +6,14 @@ import com.karolkakol.translator.ui.screens.benchmark.BenchmarkViewModel
 import com.karolkakol.translator.ui.screens.translation.TranslationViewModel
 
 object AppViewModelProvider {
-    val Factory = viewModelFactory {
-        initializer {
-            TranslationViewModel()
-        }
+    val Factory =
+        viewModelFactory {
+            initializer {
+                TranslationViewModel()
+            }
 
-        initializer {
-            BenchmarkViewModel()
+            initializer {
+                BenchmarkViewModel()
+            }
         }
-
-    }
 }
